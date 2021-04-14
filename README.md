@@ -1,70 +1,218 @@
-# Getting Started with Create React App
+# REACT NOTES:
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## COMPONENTS:
+* Everything is a component in React
+* Root(App) component is the parent to all component
+* All the components join together to make a page
+* A component can hhave multiple components
+* ### How component code is placed inside a file?
+    * Component code is placed in javascript file
+    * App component is present in App.js
+    * We can also add component with `.jsx` extensions
 
-## Available Scripts
+### COMPONENT TYPES:
+1. Stateless function components : FUNCTIONAL COMPONENTS
+* Javascript functions
+* They return html which desribes thhe page
+* They get the props are an argument to be used to build dynamic html content
+ ```Javascript
+    function Welcome(props) {
+        return (<h1>Hello, {props.name}</h1>);
+    }
+```
+2. Stateful class components : CLASS COMPONENTS
+* They are classes that extends the Component class from react library
+* They must contain a render method which return html code 
+* `import React, { Component } from 'react';`
+```Javascript
+    class Welcome extends React.Component {
+        render() {
+            return (<h1>Hello, {this.props.name}</h1>);
+        }
+    }
+```
+#### `export default <component_name>` : 'default' allows us to change the name after importing
 
-In the project directory, you can run:
+### FUNCTIONAL vs CLASS FUNCTIONAL:
+* Always prefer to use functional components
+* Advantage of functional component:
+    * Absence of `this` keyword
+    * Solution without state. Functional component need no states hence they are stateless
+* Class component are for more rich features
+* Manages their own private data - `State`
+* Used for complex logics 
+* Provides lifecycle hooks
 
-### `yarn start`
+**NOTE** : However after react 16.7 we have `HOOKS` Which helps to use states and other react features without using classes
+`Hence functional components are not more stateless`
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+---
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## JSX: Javascript XML
 
-### `yarn test`
+* JSX tags have tag name, attributes and chhildren
+* JSX is not a necessity to create React apps
+* We can use `React.createElement()` instead but JSX makes it look cleaner
+```Javascript
+    function App() {
+        return React.createElement(
+            'div',
+            null,
+            return React.createElement('h1', null, 'Hello Shinu')
+        )
+    }
+```
+* Some keywords change in JSX:
+    * `class => className`
+    * `for => htmlFor`
+* Camel casing for few keywords and tags:
+    * `onclick => onClick`
+    * `tabIndex => tabIndex`
+    * `background-color => backgroundColor`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+---
 
-### `yarn build`
+## PROPS: Properties
+* Optional input which we can pass to the component
+* Allows components to be dynamic
+* Props are specified as an attributes
+* Passing a prop `name` over `Users` component
+```Javascript
+    class Welcome extends React.Component {
+        render() {
+            return (
+            <div className="App">
+                <Users name = "Shinu"/>
+                <Users name = "Shibu"/>
+                <Users name = "Sunil"/>
+            </div>
+            );
+        }
+    }
+```
+* Users component, recieving and using the prop `name`
+    * Functional component:
+        ```Javascript
+        function Welcome(props) {
+            return (
+                <h1>Hello, {props.name}</h1>
+                );
+        }
+        ```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### CHILDREN PROPS:
+* We can pass children html/value as props as following
+```Javascript
+    class App extends React.Component {
+        render() {
+            return (
+            <div className="App">
+                <Users name = "Shinu">
+                    <p>This is a child prop<p>
+                </Users>
+            </div>
+            );
+        }
+    }
+```
+* To use this,
+```Javascript
+    class App extends React.Component {
+        render() {
+            return (
+            <div className="App">
+                <Users name = "Shinu">
+                    <p>This is a child prop<p>
+                </Users>
+            </div>
+            );
+        }
+    }
+```
+```Javascript
+    function Users(props) {
+        return (
+            <h1>hello {props.name}</h1>
+            {props.children}
+        )
+    }
+```
+* Properties which are known sure about to be passed we can pass them as `attributes`
+* If we have no clue of whhat is going to passed as prop or if we want to pass dynamic html content, we can have it in between the tags and render the content using `{props.children}`. If nothing is passed, props.children renders nothing
+* **Props are immutable**
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+---
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+# `PROPS AND STATES THE WAY TO CONTROL WHAT IS RENDERED ON THE PAGE`
+## PROPS vs STATES:
+|PROPS |STATES |
+|--- |--- |
+|Props get passed to the component | States are managed within the component |
+|Props are function parameters | States are variables declared within the function body|
+|Props get Immutable | States are mutable |
+|**_Functional component_**: `props`, **_Class component_**: `this.props` | **_Functional component_**: `useState Hook`, **_Class component_**: `this.state` |
 
-### `yarn eject`
+---
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+## STATE: 
+* States in class component:
+```Javascript
+    class Message extends Component {
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+        constructor() {
+            super();
+            this.state = {
+                message: "Welcome visitor"
+            }
+        }
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+        changeMessage() {
+            this.setState({
+                message: "Thank you for subscribing"
+            })
+        }
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+        render() {
+            return (
+                <div>
+                    <h1> {this.state.message} </h1>
+                    <button onClick={() => {
+                        this.changeMessage()
+                    }}>Subscribe</button>
+                </div>
+            )
+        }
+    }
+```
+* **this.state**: `state` is a reserved keyword
+* `setState` is used to update the state properties
+* Do's and Dont's with state
+    * _Never modify the state directly, as it will not render in the UI. Use setState()_
+    `If we try to use something like :`
+    ```Javascript
+    increement() {
+        this.state.count = this.state.count + 1
+    }
+    ```
+    `Then the browser wont get updated with the latest count value`
+    * _Calls to setStates are asynchronous hence any code which needs to be executed after setState shuld be passed as setState's callback function_
+    ```Javascript
+    increementLike() {
+        this.setState({
+            likes : this.state.likes + 1
+        }, () => console.log(this.state.likes))
+    }
+    ```
+    * _Never loop setState calls. React groups multiple setState calls into a single update for a better performance_
+    `Whenever we want to use the previous state of the state, we need to pass a function as an argument to setState`
+     ```Javascript
+    increementLike() {
+        // this.setState({
+        //     likes : this.state.likes + 1
+        // }, () => console.log(this.state.likes))
 
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `yarn build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+        this.setState((prevState) => ({            
+            likes: prevState.likes + 1
+        }))
+    }
+    ```
